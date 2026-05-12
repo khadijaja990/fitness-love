@@ -18,10 +18,12 @@ const AuthContext = createContext<any>(null);
 
 export function AuthProvider({
   children,
-}: any) {
+}: {
+  children: React.ReactNode;
+}) {
   const [user, setUser] = useState<any>(null);
 
-  // Keep user logged in
+  // Keep user logged in after refresh
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(
       auth,
@@ -58,5 +60,6 @@ export function AuthProvider({
   );
 }
 
-export const useAuth = () =>
-  useContext(AuthContext);
+export function useAuth() {
+  return useContext(AuthContext);
+}

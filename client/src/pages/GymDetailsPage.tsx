@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-
+import axios from "axios";
 import { useState } from "react";
 
 import {
@@ -29,17 +29,44 @@ function GymDetailsPage() {
   };
 
   // Submit review
-  const submitReview = () => {
-    if (!review) {
-      alert("Please write a review");
+  const submitReview = async () => {
+  if (!review) {
+    alert("Please write a review");
 
-      return;
-    }
+    return;
+  }
+
+  if (!user) {
+    alert("Please login first");
+
+    return;
+  }
+
+  try {
+    const token = await user.getIdToken();
+
+    await axios.post(
+      `http://localhost:3000/gyms/${id}/reviews`,
+      {
+        user: user.displayName,
+        comment: review,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     alert("Review submitted");
 
     setReview("");
-  };
+  } catch (error) {
+    console.log(error);
+
+    alert("Failed to submit review");
+  }
+};
 
   return (
     <div className="page">

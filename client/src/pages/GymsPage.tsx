@@ -1,20 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { useAuth } from "../context/AuthContext";
+
 import axios from "axios";
-
-import {
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
-
-import { auth } from "../firebase/config";
 
 function GymsPage() {
   const [gyms, setGyms] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [user, setUser] = useState<any>(null);
+  const { user, login } = useAuth();
 
   const [gymName, setGymName] = useState("");
   const [city, setCity] = useState("");
@@ -37,18 +32,6 @@ function GymsPage() {
   useEffect(() => {
     fetchGyms();
   }, []);
-
-  // Login
-  const login = async () => {
-    const provider = new GoogleAuthProvider();
-
-    const result = await signInWithPopup(
-      auth,
-      provider
-    );
-
-    setUser(result.user);
-  };
 
   // Add gym
   const addGym = async () => {
@@ -93,7 +76,7 @@ function GymsPage() {
               className="nav-button"
               onClick={login}
             >
-              login
+              Login
             </button>
           ) : (
             <Link to="/profile">
