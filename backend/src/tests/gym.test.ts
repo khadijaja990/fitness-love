@@ -2,6 +2,8 @@ import request from "supertest";
 import { describe, it, expect } from "vitest";
 import app from "../app";
 
+//maria section
+// Integration tests
 describe("Gym API integration tests", () => {
   // GET all gyms
   it("should return all gyms", async () => {
@@ -19,7 +21,7 @@ describe("Gym API integration tests", () => {
     expect(response.body.name).toBe("Fit Gym");
   });
 
-  // Invalid gym ID
+  // GET invalid gym ID
   it("should return 404 if gym is not found", async () => {
     const response = await request(app).get("/gyms/99");
 

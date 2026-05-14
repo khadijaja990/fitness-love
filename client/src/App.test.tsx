@@ -1,41 +1,64 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
-import App from "./App";
 import { describe, it, expect } from "vitest";
 
+import App from "./App";
+
+import { AuthProvider } from "./context/AuthContext";
+
+// Frontend unit tests
 describe("Frontend UI tests", () => {
-  // Check login button
+  // Helper render function
+  const renderApp = () => {
+    render(
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    );
+  };
+
+  // Check login before authentication
   it("should show login button when user is not logged in", () => {
-    render(<App />);
+    renderApp();
 
-    expect(screen.getByText("Login with Google")).toBeInTheDocument();
+    expect(
+      screen.getByText(/join us/i)
+    ).toBeInTheDocument();
   });
 
-  // Check app title
+  // Check application title
   it("should show app title", () => {
-    render(<App />);
+    renderApp();
 
-    expect(screen.getByText("Gym Review App")).toBeInTheDocument();
+    expect(
+      screen.getByText(/fitness love/i)
+    ).toBeInTheDocument();
   });
 
-  // Check login button exists
-  it("should render login button", () => {
-    render(<App />);
+  // Check buttons are rendered
+  it("should render button", () => {
+    renderApp();
 
-    expect(screen.getByRole("button")).toBeInTheDocument();
+    expect(
+      screen.getAllByRole("button").length
+    ).toBeGreaterThan(0);
   });
 
-  // Check gyms are not visible before login
-  it("should not show gym cards before login", () => {
-    render(<App />);
+  // Check gyms section title
+  it("should show gyms section", () => {
+    renderApp();
 
-    expect(screen.queryByText("Fit Gym")).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/all gyms/i)
+    ).toBeInTheDocument();
   });
 
-  // Check logout button is hidden before login
+  // Check logout button 
   it("should not show logout button before login", () => {
-    render(<App />);
+    renderApp();
 
-    expect(screen.queryByText("Logout")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/logout/i)
+    ).not.toBeInTheDocument();
   });
 });

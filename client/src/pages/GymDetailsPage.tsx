@@ -1,72 +1,58 @@
 import { Link, useParams } from "react-router-dom";
-import axios from "axios";
+
 import { useState } from "react";
 
-import {
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
+import axios from "axios";
 
-import { auth } from "../firebase/config";
+import { useAuth } from "../context/AuthContext";
 
 function GymDetailsPage() {
   const { id } = useParams();
 
-  const [user, setUser] = useState<any>(null);
+  // Use auth context
+  const { user, login } = useAuth();
 
   const [review, setReview] = useState("");
 
-  // Login
-  const login = async () => {
-    const provider = new GoogleAuthProvider();
-
-    const result = await signInWithPopup(
-      auth,
-      provider
-    );
-
-    setUser(result.user);
-  };
-
   // Submit review
   const submitReview = async () => {
-  if (!review) {
-    alert("Please write a review");
+    if (!review) {
+      alert("Please write a review");
 
-    return;
-  }
+      return;
+    }
 
-  if (!user) {
-    alert("Please login first");
+    if (!user) {
+      alert("Please login first");
 
-    return;
-  }
+      return;
+    }
 
-  try {
-    const token = await user.getIdToken();
+    try {
+      const token = await user.getIdToken();
 
-    await axios.post(
-      `http://localhost:3000/gyms/${id}/reviews`,
-      {
-        user: user.displayName,
-        comment: review,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      await axios.post(
+        `http://localhost:3000/gyms/${id}/reviews`,
+        {
+          user: user.displayName,
+          comment: review,
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    alert("Review submitted");
+      alert("Review submitted");
 
-    setReview("");
-  } catch (error) {
-    console.log(error);
+      setReview("");
+    } catch (error) {
+      console.log(error);
 
-    alert("Failed to submit review");
-  }
-};
+      alert("Failed to submit review");
+    }
+  };
 
   return (
     <div className="page">

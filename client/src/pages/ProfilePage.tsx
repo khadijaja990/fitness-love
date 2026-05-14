@@ -1,15 +1,16 @@
 import { Link, useNavigate } from "react-router-dom";
 
-import { signOut } from "firebase/auth";
-
-import { auth } from "../firebase/config";
+import { useAuth } from "../context/AuthContext";
 
 function ProfilePage() {
   const navigate = useNavigate();
 
+  // Use auth context
+  const { user, logout } = useAuth();
+
   // Logout user
-  const logout = async () => {
-    await signOut(auth);
+  const handleLogout = async () => {
+    await logout();
 
     navigate("/");
   };
@@ -54,6 +55,7 @@ function ProfilePage() {
             Member Profile
           </h2>
 
+          {/* Profile image */}
           <div
             style={{
               display: "flex",
@@ -62,7 +64,10 @@ function ProfilePage() {
             }}
           >
             <img
-              src="https://i.pravatar.cc/120"
+              src={
+                user?.photoURL ||
+                "https://i.pravatar.cc/120"
+              }
               alt="profile"
               style={{
                 width: "90px",
@@ -73,6 +78,7 @@ function ProfilePage() {
             />
           </div>
 
+          {/* User name */}
           <div style={{ marginBottom: "20px" }}>
             <p
               style={{
@@ -83,9 +89,12 @@ function ProfilePage() {
               Full Name
             </p>
 
-            <h3>Khadijah Jamshaid</h3>
+            <h3>
+              {user?.displayName || "Guest"}
+            </h3>
           </div>
 
+          {/* User email */}
           <div style={{ marginBottom: "20px" }}>
             <p
               style={{
@@ -97,10 +106,11 @@ function ProfilePage() {
             </p>
 
             <h3>
-              khadijah@email.com
+              {user?.email || "No email"}
             </h3>
           </div>
 
+          {/* Membership */}
           <div style={{ marginBottom: "30px" }}>
             <p
               style={{
@@ -114,9 +124,10 @@ function ProfilePage() {
             <h3>Premium Member</h3>
           </div>
 
+          {/* Logout button */}
           <button
             className="primary-btn"
-            onClick={logout}
+            onClick={handleLogout}
           >
             Logout
           </button>
